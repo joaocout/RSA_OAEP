@@ -1,3 +1,4 @@
+import math
 import random
 
 
@@ -11,7 +12,6 @@ def generate_random_number(length: int = 1024) -> int:
 
 
 def primality_test(n: int, k: int = 128) -> bool:
-
     if n == 2 or n == 3:
         return True
 
@@ -51,10 +51,35 @@ def generate_random_prime_number(length: int = 1024) -> int:
             return n
 
 
+def choose_e(phi: int) -> int:
+    e = 65537  # 2^16 + 1
+
+    while math.gcd(e, phi) != 1:
+        e = random.randrange(e, phi)
+
+    return e
+
+
+def find_d(e: int, phi: int) -> int:
+    # multiplicative inverse
+    return pow(e, -1, phi)
+
+
 def main():
     p = generate_random_prime_number()
     q = generate_random_prime_number()
+
     n = p*q
+
+    # euler totient
+    phi = (p-1) * (q-1)
+
+    e = choose_e(phi)
+
+    d = find_d(e, phi)
+
+    print('e', e)
+    print('d', d)
 
 
 main()
