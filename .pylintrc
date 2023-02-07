@@ -64,7 +64,7 @@ ignored-modules=
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
-#init-hook=
+init-hook='import sys; sys.path.append(".")'
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use, and will cap the count on Windows to
@@ -94,7 +94,7 @@ recursive=no
 # user-friendly hints instead of false-positive error messages.
 suggestion-mode=yes
 
-# Allow loading of arbitrary C extensions. Extensions are imported into the
+o# Allow loading of arbitrary C extensions. Extensions are imported into the
 # active Python interpreter and may run arbitrary code.
 unsafe-load-any-extension=no
 

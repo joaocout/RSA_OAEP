@@ -65,7 +65,8 @@ def find_d(e: int, phi: int) -> int:
     return pow(e, -1, phi)
 
 
-def main():
+def generate_keys() -> dict[str, tuple[int, int]]:
+
     p = generate_random_prime_number()
     q = generate_random_prime_number()
 
@@ -78,8 +79,7 @@ def main():
 
     d = find_d(e, phi)
 
-    print('e', e)
-    print('d', d)
-
-
-main()
+    return {
+        "public": (e, n),
+        "private": (d, n)
+    }
