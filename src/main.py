@@ -1,25 +1,24 @@
-import rsa_keygen
-import rsa_enc_dec
-import oaep
-import math
+import rsa
+
+
+MESSAGE = 'oi olá, seg comp, attackatdawn!'
 
 
 def main():
-    keys = rsa_keygen.generate_keys()
+    keys = rsa.generate_keys()
     public = keys['public']
     private = keys['private']
 
+    print('public key: \n', public, '\n')
+    print('private key: \n', private, '\n')
+
     _, n = public
 
-    message = 'oi ola, seg comp, attackatdawn!'
+    enc = rsa.encrypt(MESSAGE.encode(), public)
+    print('message after encryption: \n', enc, '\n')
 
-    a = oaep.oaep_encode(message.encode(), math.ceil(n.bit_length() / 8))
-
-    print(a)
-
-    b = oaep.oaep_decode(a, math.ceil(n.bit_length() / 8))
-
-    print(b)
+    received = rsa.decrypt(enc, private).decode()
+    print('message after decryption: \n', received, '\n')
 
 
 main()

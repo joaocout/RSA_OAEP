@@ -1,7 +1,5 @@
 import os
-import math
 import hashlib
-import rsa_keygen
 
 
 H_LEN: int = hashlib.sha3_512().digest_size
@@ -10,7 +8,6 @@ LABEL: str = ""
 
 def mgf1(z: bytes, l: int) -> bytes:
     # https://en.wikipedia.org/wiki/Mask_generation_function
-
     if (l > (H_LEN << 32)):
         raise Exception("Mask too long")
 
@@ -26,13 +23,21 @@ def mgf1(z: bytes, l: int) -> bytes:
 
 
 def xor(data: bytes, mask: bytes) -> bytes:
-    return bytes(a ^ b for (a, b) in zip(data, mask))
+    result: bytes = b''
+
+    for i in range(len(data)):
+
+        if (i >= len(mask)):
+            result += data[i].to_bytes(1, 'big')
+            continue
+
+        result += (data[i] ^ mask[i % len(mask)]).to_bytes(1, 'big')
+
+    return result
 
 
-def oaep_encode(m: bytes, k: int) -> bytes:
+def encode(m: bytes, k: int) -> bytes:
     # https://en.wikipedia.org/wiki/Optimal_asymmetric_encryption_padding
-    # sha3_512 used as the hash function
-
     label_hash = hashlib.sha3_512(LABEL.encode()).digest()
 
     m_len = len(m)
@@ -54,7 +59,7 @@ def oaep_encode(m: bytes, k: int) -> bytes:
     return b'\x00' + masked_seed + masked_db
 
 
-def oaep_decode(em: bytes, k: int) -> bytes:
+def decode(em: bytes, k: int) -> bytes:
     # https://en.wikipedia.org/wiki/Optimal_asymmetric_encryption_padding
     label_hash = hashlib.sha3_512(LABEL.encode()).digest()
 

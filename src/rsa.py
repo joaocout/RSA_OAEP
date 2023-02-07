@@ -1,5 +1,6 @@
 import math
 import random
+import oaep
 
 
 def generate_random_number(length: int = 1024) -> int:
@@ -66,20 +67,45 @@ def find_d(e: int, phi: int) -> int:
 
 
 def generate_keys() -> dict[str, tuple[int, int]]:
-
     p = generate_random_prime_number()
     q = generate_random_prime_number()
 
     n = p*q
-
     # euler totient
     phi = (p-1) * (q-1)
 
     e = choose_e(phi)
-
     d = find_d(e, phi)
 
     return {
         "public": (e, n),
         "private": (d, n)
     }
+
+
+def encrypt(message: bytes, public_key: tuple[int, int]) -> bytes:
+    # using oaep
+    e, n = public_key
+    k = math.ceil(n.bit_length() / 8)
+
+    encoded_message = oaep.encode(message, k)
+
+    # m^e (mod n)
+    c = pow(int.from_bytes(encoded_message, 'big'), e, n)
+
+    return c.to_bytes(k, 'big')
+
+
+def decrypt(cryptogram: bytes, private_key: tuple[int, int]) -> bytes:
+    # using oaep
+    d, n = private_key
+    k = math.ceil(n.bit_length() / 8)
+
+    # c^d (mod n)
+    m = pow(int.from_bytes(cryptogram, 'big'), d, n)
+
+    m = m.to_bytes(k, 'big')
+
+    decoded_message = oaep.decode(m, k)
+
+    return decoded_message
