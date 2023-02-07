@@ -1,7 +1,8 @@
 import os
 import math
 import hashlib
-import rsa_key
+import rsa_keygen
+
 
 H_LEN: int = hashlib.sha3_512().digest_size
 LABEL: str = ""
@@ -28,16 +29,16 @@ def xor(data: bytes, mask: bytes) -> bytes:
     return bytes(a ^ b for (a, b) in zip(data, mask))
 
 
-def oaep_encode(m: str, k: int) -> bytes:
+def oaep_encode(m: bytes, k: int) -> bytes:
     # https://en.wikipedia.org/wiki/Optimal_asymmetric_encryption_padding
     # sha3_512 used as the hash function
 
     label_hash = hashlib.sha3_512(LABEL.encode()).digest()
 
-    m_len = len(m.encode())
+    m_len = len(m)
     ps = b'\x00' * (k - m_len - 2 * H_LEN - 2)
 
-    db = label_hash + ps + b'\x01' + m.encode()
+    db = label_hash + ps + b'\x01' + m
 
     if len(db) != k - H_LEN - 1:
         raise Exception("Length of data block should be 'k - hlen - 1'")
@@ -53,7 +54,7 @@ def oaep_encode(m: str, k: int) -> bytes:
     return b'\x00' + masked_seed + masked_db
 
 
-def oaep_decode(em: bytes, k: int) -> str:
+def oaep_decode(em: bytes, k: int) -> bytes:
     # https://en.wikipedia.org/wiki/Optimal_asymmetric_encryption_padding
     label_hash = hashlib.sha3_512(LABEL.encode()).digest()
 
@@ -87,27 +88,4 @@ def oaep_decode(em: bytes, k: int) -> str:
 
     m = db[H_LEN + len(ps) + 1:]
 
-    return m.decode()
-
-
-def main():
-    keys = rsa_key.generate_keys()
-
-    # (e, n)
-    public_key = keys["public"]
-
-    e, n = public_key
-
-    # (d, n)
-    private_key = keys["private"]
-    d, _ = private_key
-
-    enc = oaep_encode('hello world, segcomp unb, attack at dawn!',
-                      math.ceil(n.bit_length() / 8))
-
-    dec = oaep_decode(enc, math.ceil(n.bit_length() / 8))
-
-    print(dec)
-
-
-main()
+    return m
