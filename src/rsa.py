@@ -83,9 +83,8 @@ def generate_keys() -> dict[str, tuple[int, int]]:
     }
 
 
-def encrypt(message: bytes, public_key: tuple[int, int]) -> bytes:
-    # using oaep
-    e, n = public_key
+def encrypt_with_oaep(message: bytes, key: tuple[int, int]) -> bytes:
+    e, n = key
     k = math.ceil(n.bit_length() / 8)
 
     encoded_message = oaep.encode(message, k)
@@ -96,9 +95,8 @@ def encrypt(message: bytes, public_key: tuple[int, int]) -> bytes:
     return c.to_bytes(k, 'big')
 
 
-def decrypt(cryptogram: bytes, private_key: tuple[int, int]) -> bytes:
-    # using oaep
-    d, n = private_key
+def decrypt_with_oaep(cryptogram: bytes, key: tuple[int, int]) -> bytes:
+    d, n = key
     k = math.ceil(n.bit_length() / 8)
 
     # c^d (mod n)
