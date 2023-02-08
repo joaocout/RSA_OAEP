@@ -1,6 +1,8 @@
-import rsa
 import hashlib
 import base64
+
+import rsa
+
 
 # max size of RSA_OAEP is: n.bit_length() / 8 - 2 * hlen - 2 = 126 (in this case)
 MESSAGE = 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
@@ -29,7 +31,7 @@ def main():
     print('B64 signature: \n', b64_signature)
 
     # PARTE 3: VERIFICAÇÃO
-    _signature = base64.b64decode(b64_signature)
+    _signature: bytes = base64.b64decode(b64_signature)
     _hash = rsa.decrypt_with_oaep(_signature, public)
 
     if (_hash == hashlib.sha3_512(MESSAGE.encode()).digest()):

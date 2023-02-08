@@ -1,12 +1,12 @@
 import math
 import random
+
 import oaep
 
 
 def generate_random_number(length: int = 1024) -> int:
     while True:
         n = random.getrandbits(length)
-
         # return the number only if it has the specified length
         if len(bin(n)[2:]) == length:
             return n
@@ -86,6 +86,12 @@ def generate_keys() -> dict[str, tuple[int, int]]:
 def encrypt_with_oaep(message: bytes, key: tuple[int, int]) -> bytes:
     e, n = key
     k = math.ceil(n.bit_length() / 8)
+
+    # error handling
+    max_length = k - 2 * oaep.H_LEN - 2
+    if len(message) > max_length:
+        raise Exception(
+            f'Block length should be less than or equal to {max_length}')
 
     encoded_message = oaep.encode(message, k)
 
