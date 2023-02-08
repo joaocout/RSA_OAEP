@@ -5,7 +5,7 @@ import rsa
 
 
 # max size of RSA_OAEP is: n.bit_length() / 8 - 2 * hlen - 2 = 126 (in this case)
-MESSAGE = 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
+MESSAGE = 'ola oi, segcomp, brasilia'
 
 
 def main():

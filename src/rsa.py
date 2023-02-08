@@ -87,7 +87,6 @@ def encrypt_with_oaep(message: bytes, key: tuple[int, int]) -> bytes:
     e, n = key
     k = math.ceil(n.bit_length() / 8)
 
-    # error handling
     max_length = k - 2 * oaep.H_LEN - 2
     if len(message) > max_length:
         raise Exception(
