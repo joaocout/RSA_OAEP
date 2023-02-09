@@ -12,7 +12,7 @@ def generate_random_number(length: int = 1024) -> int:
             return n
 
 
-def primality_test(n: int, k: int = 128) -> bool:
+def primality_test(n: int, k: int = 40) -> bool:
     if n == 2 or n == 3:
         return True
 

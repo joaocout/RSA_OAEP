@@ -23,17 +23,7 @@ def mgf1(z: bytes, l: int) -> bytes:
 
 
 def xor(data: bytes, mask: bytes) -> bytes:
-    result: bytes = b''
-
-    for i in range(len(data)):
-
-        if (i >= len(mask)):
-            result += data[i].to_bytes(1, 'big')
-            continue
-
-        result += (data[i] ^ mask[i % len(mask)]).to_bytes(1, 'big')
-
-    return result
+    return bytes(a ^ b for a, b in zip(data, mask))
 
 
 def encode(m: bytes, k: int) -> bytes:
