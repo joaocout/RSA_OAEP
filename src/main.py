@@ -24,7 +24,6 @@ def main():
     # dividing message into chunks so it's possible to work arround the size limitation
     for i in range(0, len(MESSAGE_BYTES), BLOCK_SIZE):
         enc += rsa.encrypt_with_oaep(MESSAGE_BYTES[i:i + BLOCK_SIZE], public)
-        print(len(enc))
 
     print('Message after encryption: \n', enc, '\n')
 
